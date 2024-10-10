@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fcntl.h>
+#include <cstring>
 #include <unistd.h>
 
 int main(int argc, char* argv[]) {
@@ -8,7 +9,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int file = open(argv[1], "r");
+    int file = open(argv[1], O_RDONLY);
     if (file == -1) {
         std::cerr << "Something went wrong while opening the file " << argv[1] << "\n";
         return 1;
