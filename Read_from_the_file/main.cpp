@@ -1,25 +1,27 @@
 #include <iostream>
-#include <fstream>
-#include <cstring>
+#include <fcntl.h>
+#include <unistd.h>
 
-int main(int argc, char* argv[]){
-        if(argc < 2){
-           
-        	std::cout<<"File name was not given by arguments\n";
-        
-		return 1;
-    	}
-	std::ifstream file(argv[1]);
-    		if (!file.is_open()) {
-        	std::cerr << "Error, something went wrong while opening the file " << argv[1] << "\n";
-        	return 1;
-    	}
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        std::cout << "too many or not enough arguments.\n";
+        return 1;
+    }
 
-    	std::string line;
-    		while (std::getline(file, line)) {
-        	std::cout << line << "\n";
-    	}	
+    int file = open(argv[1], "r");
+    if (file == -1) {
+        std::cerr << "Something went wrong while opening the file " << argv[1] << "\n";
+        return 1;
+    }
 
-    file.close();
+    char buffer[256];
+    ssize_t bytesRead;
+
+    while ((bytesRead = read(file, buffer, sizeof(buffer))) > 0) {
+        std::cout.write(buffer, bytesRead);
+    }
+
+    close(file);
     return 0;
 }
+
