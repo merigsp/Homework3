@@ -11,7 +11,8 @@ int main(int argc, char* argv[]) {
 
     int file = open(argv[1], O_RDONLY);
     if (file == -1) {
-        std::cerr << "Something went wrong while opening the file " << argv[1] << "\n";
+        std::cerr << "Something went wrong while opening the file " 
+<< argv[1] << "\n";
         return 1;
     }
 
@@ -22,7 +23,10 @@ int main(int argc, char* argv[]) {
         std::cout.write(buffer, bytesRead);
     }
 
-    close(file);
+    int closestatus = close(file);
+	if(closestatus == -1){
+		std::cout << "Error"<<std::endl;
+		return 1;
+    }
     return 0;
 }
-
