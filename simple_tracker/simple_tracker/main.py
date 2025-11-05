@@ -1,30 +1,33 @@
-# read_config.py
+# main.py
 
-def read_interval_from_config():
+import time
+from tracker import Tracker
+
+def read_interval_from_config(filepath="config/config.txt"):
+    """Read and return the interval value from the config file."""
     try:
-        # Open and read the config file
-        with open("config/config.txt", "r") as file:
-            lines = file.readlines()
-        
-        interval = None
-        # Extract the interval value
-        for line in lines:
-            if line.lower().startswith("interval"):
-                # Expected format: interval=10 (for example)
-                key, value = line.strip().split("=")
-                interval = value.strip()
-                break
-
-        if interval:
-            print(f"Interval value: {interval}")
-        else:
-            print("No interval value found in config/config.txt")
-
+        with open(filepath, "r") as file:
+            for line in file:
+                if line.lower().startswith("interval"):
+                    key, value = line.strip().split("=")
+                    return int(value.strip())
     except FileNotFoundError:
         print("Error: config/config.txt not found.")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Error reading config: {e}")
+
+    # Default to 5 seconds if not found or invalid
+    return 5
 
 
 if __name__ == "__main__":
-    read_interval_from_config()
+    interval = read_interval_from_config()
+    tracker = Tracker()
+
+    print(f"Starting tracker with interval = {interval} seconds")
+
+    while True:
+        tracker.increment()
+        print(tracker)
+        tracker.save_to_file()
+        time.sleep(interval)
